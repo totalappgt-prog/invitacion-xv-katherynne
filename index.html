@@ -355,18 +355,20 @@
     }
 
     .hero__eyebrow{ font-size:clamp(9px,2.6vw,11px); letter-spacing:.42em; text-transform:uppercase; color:var(--rose-deep); margin:0 0 10px; }
+    /* El degradado va SOLO en las palabras (.w), nunca también en el h1:
+       si ambos llevan background-clip:text se dibujan dos capas y al animarse
+       las palabras se ven letras encimadas. */
     .hero__title{
       font-family:var(--font-script); font-size:clamp(38px,11.5vw,78px);
       line-height:1.28; margin:0;
       padding:.2em .26em .26em; overflow-wrap:break-word;
-      background:var(--grad-title);
-      -webkit-background-clip:text; background-clip:text;
-      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+      color:var(--rose-deep);
       filter:drop-shadow(0 6px 14px rgba(201,109,134,.22));
     }
     .hero__title .w{
-      display:inline-block; padding:.02em .04em;
+      display:inline-block; padding:.08em .12em;
       background:var(--grad-title);
+      background-size:220% auto;
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
     }
@@ -1363,11 +1365,11 @@
       setTimeout(() => {
         document.querySelectorAll(".hero .reveal").forEach((el, i) =>
           setTimeout(() => el.classList.add("is-visible"), 110 * i));
-      }, 1400);
+      }, 1900);   // después de que el sobre desapareció por completo (1.85s)
 
       petalBurst();
       startMusic();
-      setTimeout(() => { env.style.display = "none"; }, 2050);
+      setTimeout(() => { env.style.display = "none"; }, 1900);
       window.scrollTo(0, 0);
     }
 
