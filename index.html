@@ -25,23 +25,28 @@
        Paleta: Nude · Rose Gold · Ivory
        ========================================================= */
     :root{
-      --ivory:#FBF7F2;
-      --ivory-2:#F4EBE1;
-      --ivory-3:#EFE3D6;
-      --nude:#E4CDBC;
-      --nude-soft:#F3E6DA;
-      --rose:#B76E79;
-      --rose-deep:#9C5661;
-      --rose-light:#DDA9A4;
-      --gold:#C9A66B;
-      --gold-soft:#E6D2AE;
-      --ink:#4A3B38;
-      --ink-soft:#7A6862;
+      --ivory:#FDF8F5;
+      --ivory-2:#FBEFF0;
+      --ivory-3:#F6E2E4;
+      --nude:#EAC9C0;
+      --nude-soft:#F9E6E7;
+      --rose:#C76D86;
+      --rose-deep:#A94E6A;
+      --rose-light:#F0A9BC;
+      --pink:#F3C2D1;
+      --pink-soft:#FCE7ED;
+      --gold:#C6A052;
+      --gold-2:#E4C87F;
+      --gold-soft:#EFDDB4;
+      --ink:#4A3540;
+      --ink-soft:#856A76;
       --white:#ffffff;
 
-      --grad-rose:linear-gradient(120deg,#E8B9A8 0%,#B76E79 45%,#C9A66B 100%);
-      --shadow-soft:0 18px 45px -22px rgba(120,80,70,.45);
-      --shadow-card:0 22px 60px -30px rgba(120,80,70,.55);
+      --grad-rose:linear-gradient(120deg,#F3C2D1 0%,#C76D86 45%,#C6A052 100%);
+      --grad-gold:linear-gradient(120deg,#E4C87F 0%,#C6A052 60%,#A94E6A 100%);
+      --grad-title:linear-gradient(100deg,#A94E6A 0%,#C76D86 38%,#C6A052 100%);
+      --shadow-soft:0 18px 45px -22px rgba(146,79,101,.42);
+      --shadow-card:0 22px 60px -30px rgba(146,79,101,.5);
       --radius:20px;
 
       --font-script:'Great Vibes', cursive;
@@ -74,6 +79,29 @@
     .script{ font-family:var(--font-script); font-weight:400; line-height:1.15; }
     .serif{ font-family:var(--font-serif); }
 
+    /* Texto con degradado Rose Gold → Oro */
+    .grad-text{
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+    }
+
+    /* ---------- Jardín de rosas de fondo ---------- */
+    .bloom{
+      position:absolute; z-index:1; pointer-events:none;
+      opacity:.6;
+      filter:drop-shadow(0 12px 18px rgba(201,109,134,.20));
+      animation:sway 9s ease-in-out infinite;
+    }
+    .bloom--soft{ opacity:.35; }
+    .bloom--bold{ opacity:.7; }
+    .bloom svg{ width:100%; height:100%; display:block; }
+    @keyframes sway{
+      0%,100%{ transform:rotate(-4deg) translateY(0); }
+      50%{ transform:rotate(4deg) translateY(-6px); }
+    }
+    @media (prefers-reduced-motion:reduce){ .bloom{ animation:none; } }
+
     /* =========================================================
        1. SOBRE / PORTADA
        ========================================================= */
@@ -82,9 +110,9 @@
       display:flex; align-items:center; justify-content:center;
       padding:24px;
       background:
-        radial-gradient(circle at 20% 15%, rgba(221,169,164,.35), transparent 55%),
-        radial-gradient(circle at 85% 85%, rgba(201,166,107,.30), transparent 55%),
-        linear-gradient(160deg,#FBF7F2 0%,#F1E2D5 100%);
+        radial-gradient(circle at 18% 12%, rgba(243,194,209,.55), transparent 55%),
+        radial-gradient(circle at 88% 88%, rgba(228,200,127,.42), transparent 55%),
+        linear-gradient(160deg,#FDF8F5 0%,#F8E1E5 55%,#F3E3D2 100%);
       transition:opacity .9s ease, visibility .9s ease;
     }
     .envelope.is-open{ opacity:0; visibility:hidden; }
@@ -95,9 +123,9 @@
       border-radius:24px;
       padding:40px 26px 34px;
       text-align:center;
-      background:linear-gradient(180deg,#fff 0%,#FBF2E9 100%);
-      border:1px solid rgba(201,166,107,.35);
-      box-shadow:0 40px 90px -40px rgba(120,80,70,.6);
+      background:linear-gradient(180deg,#fff 0%,#FDF0F3 60%,#FBF0E3 100%);
+      border:1px solid rgba(198,160,82,.45);
+      box-shadow:0 40px 90px -40px rgba(146,79,101,.6);
       overflow:hidden;
     }
     .envelope__inner::before{
@@ -127,7 +155,12 @@
     }
 
     .envelope__top{ font-size:12px; letter-spacing:.42em; text-transform:uppercase; color:var(--rose-deep); margin:0 0 6px; }
-    .envelope__name{ font-family:var(--font-script); font-size:40px; color:var(--rose-deep); margin:0 0 4px; }
+    .envelope__name{
+      font-family:var(--font-script); font-size:40px; margin:0 0 4px;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+    }
     .envelope__sub{ font-family:var(--font-serif); font-size:15px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 26px; }
 
     .envelope__btn{
@@ -145,9 +178,9 @@
     /* =========================================================
        Estructura general
        ========================================================= */
-    .wrap{ width:min(760px, 92vw); margin:0 auto; }
+    .wrap{ width:min(760px, 92vw); margin:0 auto; position:relative; z-index:2; }
 
-    section{ position:relative; padding:64px 0; }
+    section{ position:relative; padding:64px 0; isolation:isolate; overflow:hidden; }
 
     .eyebrow{
       display:inline-block;
@@ -168,17 +201,17 @@
     /* Divisor ornamental */
     .ornament{
       display:flex; align-items:center; justify-content:center; gap:14px;
-      margin:22px auto; color:var(--gold);
+      margin:22px auto; color:var(--rose);
     }
     .ornament::before, .ornament::after{
       content:""; height:1px; width:min(90px,22vw);
-      background:linear-gradient(90deg,transparent,var(--gold-soft));
+      background:linear-gradient(90deg,transparent,var(--gold-2));
     }
-    .ornament::after{ background:linear-gradient(90deg,var(--gold-soft),transparent); }
-    .ornament i{ font-size:12px; }
+    .ornament::after{ background:linear-gradient(90deg,var(--gold-2),transparent); }
+    .ornament i{ font-size:12px; color:var(--gold); }
 
     /* ---------- Fondo decorativo floral ---------- */
-    .bg-floral{ position:absolute; pointer-events:none; opacity:.5; color:var(--nude); }
+    .bg-floral{ position:absolute; pointer-events:none; opacity:.5; color:var(--rose-light); z-index:0; }
     .bg-floral--tl{ top:0; left:-40px; width:180px; }
     .bg-floral--br{ bottom:0; right:-40px; width:200px; transform:rotate(180deg); }
 
@@ -192,9 +225,10 @@
       padding:80px 20px 90px;
       overflow:hidden;
       background:
-        radial-gradient(circle at 50% 8%, rgba(221,169,164,.42), transparent 60%),
-        radial-gradient(circle at 12% 90%, rgba(201,166,107,.30), transparent 55%),
-        linear-gradient(180deg,#FDFAF6 0%,#F6EADF 60%,#F2E2D5 100%);
+        radial-gradient(circle at 50% 6%, rgba(243,194,209,.55), transparent 58%),
+        radial-gradient(circle at 12% 88%, rgba(228,200,127,.45), transparent 55%),
+        radial-gradient(circle at 90% 30%, rgba(240,169,188,.35), transparent 55%),
+        linear-gradient(180deg,#FEFAF8 0%,#FBE8EC 58%,#F6E4DA 100%);
     }
     .hero__bg{
       position:absolute; inset:-8% 0 0;
@@ -213,22 +247,31 @@
     .hero__medallion{
       width:132px; height:132px; margin:0 auto 22px;
       border-radius:50%; display:grid; place-items:center;
-      background:linear-gradient(150deg,#fff, #F6E7DA);
-      border:1px solid rgba(201,166,107,.55);
-      box-shadow:0 26px 55px -26px rgba(120,80,70,.65), inset 0 0 0 6px rgba(255,255,255,.6);
+      background:linear-gradient(150deg,#fff,#FDEFF3 55%,#FBF0DF);
+      border:1px solid rgba(198,160,82,.65);
+      box-shadow:0 26px 55px -26px rgba(146,79,101,.6), inset 0 0 0 6px rgba(255,255,255,.65);
       position:relative;
     }
     .hero__medallion::after{
       content:""; position:absolute; inset:9px; border-radius:50%;
-      border:1px dashed rgba(183,110,121,.45);
+      border:1px dashed rgba(201,109,134,.5);
     }
-    .hero__monogram{ font-family:var(--font-script); font-size:46px; color:var(--rose-deep); line-height:1; }
+    .hero__monogram{
+      font-family:var(--font-script); font-size:46px; line-height:1;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+    }
 
     .hero__eyebrow{ font-size:clamp(9px,2.6vw,11px); letter-spacing:.42em; text-transform:uppercase; color:var(--rose-deep); margin:0 0 10px; }
     .hero__title{
       font-family:var(--font-script); font-size:clamp(40px,12vw,80px);
-      line-height:1.02; color:var(--rose-deep); margin:0;
-      padding:0 4px; overflow-wrap:break-word;
+      line-height:1.02; margin:0;
+      padding:2px 6px 6px; overflow-wrap:break-word;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+      filter:drop-shadow(0 6px 14px rgba(201,109,134,.22));
     }
     .hero__name{
       font-family:var(--font-serif); font-weight:500; letter-spacing:.12em;
@@ -267,14 +310,15 @@
     /* =========================================================
        3. CONTADOR
        ========================================================= */
-    .countdown-section{ background:linear-gradient(180deg,#F2E2D5 0%,var(--ivory) 30%); padding-top:54px; }
+    .countdown-section{ background:linear-gradient(180deg,#F6E4DA 0%,#FBE9EE 22%,var(--ivory) 55%); padding-top:54px; }
     .countdown{
       display:grid; grid-template-columns:repeat(4,1fr);
       gap:10px; margin:26px 0 0;
     }
     .countdown__item{
-      background:#fff; border-radius:16px; padding:18px 6px 14px;
-      border:1px solid rgba(201,166,107,.35);
+      background:linear-gradient(180deg,#fff,#FEF6F8);
+      border-radius:16px; padding:18px 6px 14px;
+      border:1px solid rgba(198,160,82,.5);
       box-shadow:var(--shadow-card);
       display:flex; flex-direction:column; align-items:center;
     }
@@ -295,16 +339,16 @@
        Tarjetas y bloques
        ========================================================= */
     .card{
-      background:#fff;
-      border:1px solid rgba(201,166,107,.32);
+      background:linear-gradient(180deg,#fff,#FFF8FA);
+      border:1px solid rgba(198,160,82,.42);
       border-radius:var(--radius);
       padding:28px 24px;
       box-shadow:var(--shadow-soft);
     }
 
     .quote-block{
-      background:linear-gradient(180deg,#fff,#FAF1E8);
-      border-left:3px solid var(--rose-light);
+      background:linear-gradient(180deg,#fff,#FDEFF3);
+      border-left:3px solid var(--rose);
       border-radius:16px;
       padding:30px 26px;
       box-shadow:var(--shadow-soft);
@@ -319,15 +363,20 @@
     .intro-list li i{ position:absolute; left:0; top:4px; color:var(--rose); }
 
     /* Padres */
-    .parents{ text-align:center; background:linear-gradient(180deg,var(--ivory) 0%,var(--ivory-2) 100%); }
+    .parents{ text-align:center; background:linear-gradient(180deg,var(--ivory) 0%,#FBEDF0 55%,#F7E6E1 100%); }
     .parents__names{ margin-top:20px; display:grid; gap:8px; }
     .parents__name{ font-family:var(--font-serif); font-size:clamp(19px,5vw,24px); color:var(--ink); }
-    .parents__amp{ font-family:var(--font-script); font-size:30px; color:var(--rose); }
+    .parents__amp{
+      font-family:var(--font-script); font-size:32px;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose);
+    }
 
     /* =========================================================
        4. CUÁNDO Y DÓNDE
        ========================================================= */
-    .whenwhere{ background:linear-gradient(180deg,var(--ivory-2) 0%,var(--ivory) 40%); }
+    .whenwhere{ background:linear-gradient(180deg,#F7E6E1 0%,#FCEFF2 35%,var(--ivory) 70%); }
     .date-badge{
       display:inline-flex; flex-direction:column; align-items:center;
       padding:18px 30px; border-radius:18px;
@@ -376,7 +425,7 @@
     /* =========================================================
        5. DRESS CODE
        ========================================================= */
-    .dresscode{ background:linear-gradient(180deg,var(--ivory) 0%,var(--ivory-3) 100%); }
+    .dresscode{ background:linear-gradient(180deg,var(--ivory) 0%,#FBEDF1 60%,#F6E2E4 100%); }
     .palette{ display:flex; justify-content:center; gap:26px; margin:26px 0 40px; }
     .swatch{
       width:52px; height:52px; border-radius:50%;
@@ -394,33 +443,33 @@
     /* =========================================================
        Regalos
        ========================================================= */
-    .gifts{ background:linear-gradient(180deg,var(--ivory-3) 0%,var(--ivory) 100%); }
+    .gifts{ background:linear-gradient(180deg,#F6E2E4 0%,#FBEDF1 45%,var(--ivory) 100%); }
     .gifts .card{ text-align:center; }
     .icon-circle{
       width:74px; height:74px; margin:0 auto 18px;
       border-radius:50%; display:grid; place-items:center;
       font-size:26px; color:var(--rose-deep);
-      background:linear-gradient(140deg,#FBEADD,#F2DACB);
-      border:1px solid rgba(201,166,107,.4);
+      background:linear-gradient(140deg,#FDEFF3,#F6DCE4);
+      border:1px solid rgba(198,160,82,.55);
     }
 
     /* =========================================================
        7. ORACIÓN (pergamino)
        ========================================================= */
-    .prayer{ background:linear-gradient(180deg,var(--ivory) 0%,#F7EBDF 100%); }
+    .prayer{ background:linear-gradient(180deg,var(--ivory) 0%,#FCEFF2 55%,#F8E7DC 100%); }
     .scroll-paper{
       position:relative;
       background:
-        linear-gradient(180deg,#FFFDF8,#FBF1E4);
+        linear-gradient(180deg,#FFFDFA,#FDF1F4 70%,#FBF2E6);
       border-radius:18px;
       padding:40px 26px;
       box-shadow:var(--shadow-card);
-      border:1px solid rgba(201,166,107,.4);
+      border:1px solid rgba(198,160,82,.5);
       text-align:center;
     }
     .scroll-paper::before,.scroll-paper::after{
       content:""; position:absolute; left:0; right:0; height:14px;
-      background:linear-gradient(90deg, transparent, rgba(201,166,107,.35), transparent);
+      background:linear-gradient(90deg, transparent, rgba(198,160,82,.45), transparent);
     }
     .scroll-paper::before{ top:10px; }
     .scroll-paper::after{ bottom:10px; }
@@ -429,12 +478,17 @@
       font-family:var(--font-serif); font-style:italic;
       font-size:clamp(16px,4.4vw,20px); line-height:1.75; color:var(--ink); margin:0;
     }
-    .scroll-paper .amen{ margin-top:18px; font-family:var(--font-script); font-size:32px; color:var(--rose-deep); }
+    .scroll-paper .amen{
+      margin-top:18px; font-family:var(--font-script); font-size:32px;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+    }
 
     /* =========================================================
        8. RSVP
        ========================================================= */
-    .rsvp{ background:linear-gradient(180deg,#F7EBDF 0%,var(--ivory-2) 100%); }
+    .rsvp{ background:linear-gradient(180deg,#F8E7DC 0%,#FBEDF1 45%,#F6E2E4 100%); }
     .rsvp__deadline{
       display:inline-block; margin-top:16px; padding:10px 20px; border-radius:999px;
       background:#fff; border:1px dashed rgba(183,110,121,.55);
@@ -447,15 +501,21 @@
        ========================================================= */
     .closing{
       text-align:center;
-      background:linear-gradient(180deg,var(--ivory-2) 0%,#EFDCCE 100%);
+      background:linear-gradient(180deg,#F6E2E4 0%,#F7E3D8 70%,#F3DCD1 100%);
       padding-bottom:84px;
     }
-    .closing__signature{ font-family:var(--font-script); font-size:clamp(38px,11vw,54px); color:var(--rose-deep); margin:10px 0 0; }
+    .closing__signature{
+      font-family:var(--font-script); font-size:clamp(38px,11vw,54px); margin:10px 0 0;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+      filter:drop-shadow(0 6px 14px rgba(201,109,134,.22));
+    }
     .closing__note{ font-size:12px; letter-spacing:.26em; text-transform:uppercase; color:var(--ink-soft); }
 
     .footer{
       text-align:center; padding:26px 20px 34px;
-      background:#EFDCCE; color:var(--ink-soft); font-size:12px; letter-spacing:.12em;
+      background:#F3DCD1; color:var(--ink-soft); font-size:12px; letter-spacing:.12em;
     }
 
     /* Botón flotante WhatsApp */
@@ -498,8 +558,49 @@
 </head>
 <body class="is-locked">
 
+  <!-- ============ JARDÍN DE ROSAS (símbolo SVG reutilizable) ============ -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="petal-pink" cx="50%" cy="62%" r="68%">
+        <stop offset="0%" stop-color="#FFF1F5"/>
+        <stop offset="55%" stop-color="#F4AEC3"/>
+        <stop offset="100%" stop-color="#CF7396"/>
+      </radialGradient>
+      <linearGradient id="petal-blush" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FBD3DF"/>
+        <stop offset="100%" stop-color="#E2909F"/>
+      </linearGradient>
+      <symbol id="rose" viewBox="0 0 120 130">
+        <g transform="translate(60,62)">
+          <path d="M-6 27 C -36 22, -48 44, -31 55 C -13 61, -1 45, -6 27 Z" fill="#BBD4B3" opacity=".85"/>
+          <path d="M8 29 C 36 21, 52 40, 35 52 C 18 60, 6 47, 8 29 Z" fill="#A6C69D" opacity=".8"/>
+          <g fill="url(#petal-pink)" stroke="#C6A052" stroke-width="1" stroke-opacity=".45">
+            <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(72)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(144)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(216)"/>
+            <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(288)"/>
+          </g>
+          <g fill="url(#petal-blush)" opacity=".95">
+            <ellipse cx="0" cy="-14" rx="10" ry="16" transform="rotate(36)"/>
+            <ellipse cx="0" cy="-14" rx="10" ry="16" transform="rotate(108)"/>
+            <ellipse cx="0" cy="-14" rx="10" ry="16" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-14" rx="10" ry="16" transform="rotate(252)"/>
+            <ellipse cx="0" cy="-14" rx="10" ry="16" transform="rotate(324)"/>
+          </g>
+          <circle r="8" fill="#F4D98C" stroke="#C6A052" stroke-width="1.2"/>
+          <circle r="3.4" fill="#C6A052" opacity=".75"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
   <!-- ============ SOBRE DE APERTURA ============ -->
   <div class="envelope" id="envelope">
+    <span class="bloom" style="top:6%;left:4%;width:110px;opacity:.5" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+    <span class="bloom" style="bottom:6%;right:4%;width:124px;opacity:.5;animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+    <span class="bloom bloom--soft" style="top:24%;right:9%;width:78px;animation-delay:-4s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+    <span class="bloom bloom--soft" style="bottom:20%;left:8%;width:88px;animation-delay:-3s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
     <div class="envelope__inner">
       <div class="envelope__seal"><i class="fa-solid fa-envelope-open-text"></i></div>
       <p class="envelope__top">Mis XVI Años</p>
@@ -518,6 +619,11 @@
     <section class="hero" id="inicio">
       <div class="hero__bg" id="heroBg" aria-hidden="true"></div>
       <div class="hero__veil" aria-hidden="true"></div>
+
+      <span class="bloom" style="top:4%;left:-36px;width:132px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="top:17%;right:-30px;width:104px;animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:10%;left:1%;width:86px;animation-delay:-4s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom" style="bottom:1%;right:-28px;width:124px;animation-delay:-3s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
 
       <div class="hero__content">
         <div class="hero__medallion reveal">
@@ -545,6 +651,8 @@
 
     <!-- ============ 2. CUENTA REGRESIVA ============ -->
     <section class="countdown-section" id="contador">
+      <span class="bloom bloom--soft" style="top:12%;left:-40px;width:116px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:6%;right:-38px;width:98px;animation-delay:-3s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap text-center">
         <span class="eyebrow reveal">Solo faltan</span>
         <h2 class="title reveal d1">Cuenta regresiva</h2>
@@ -578,6 +686,8 @@
 
     <!-- ============ 3. INVITACIÓN / PADRES ============ -->
     <section class="parents" id="invitacion">
+      <span class="bloom" style="top:3%;right:-34px;width:126px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:4%;left:-32px;width:108px;animation-delay:-2.5s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <svg class="bg-floral bg-floral--tl" viewBox="0 0 200 200" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
         <path d="M0 0c40 20 60 55 55 100M0 0c25 35 25 70 10 105M0 0c45 8 80 30 95 70" />
         <circle cx="55" cy="100" r="5"/><circle cx="10" cy="105" r="4"/><circle cx="95" cy="70" r="5"/>
@@ -615,6 +725,8 @@
 
     <!-- ============ 4. CUÁNDO Y DÓNDE ============ -->
     <section class="whenwhere" id="evento">
+      <span class="bloom" style="top:2%;left:-36px;width:120px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:2%;right:-34px;width:112px;animation-delay:-3.5s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap text-center">
         <span class="eyebrow reveal">Te esperamos el día</span>
         <div class="date-badge reveal d1">
@@ -676,6 +788,8 @@
 
     <!-- ============ 5. DRESS CODE ============ -->
     <section class="dresscode" id="dresscode">
+      <span class="bloom" style="top:4%;right:-30px;width:118px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:8%;left:-34px;width:100px;animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap text-center">
         <span class="eyebrow reveal">Código de vestimenta</span>
         <h2 class="title reveal d1">Dress Code</h2>
@@ -697,6 +811,8 @@
 
     <!-- ============ 6. MESA DE REGALOS ============ -->
     <section class="gifts" id="regalos">
+      <span class="bloom bloom--soft" style="top:6%;left:-36px;width:104px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:6%;right:-36px;width:112px;animation-delay:-3s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap text-center">
         <span class="eyebrow reveal">Mesa de regalos</span>
 
@@ -713,6 +829,8 @@
 
     <!-- ============ 7. ORACIÓN ============ -->
     <section class="prayer" id="oracion">
+      <span class="bloom" style="top:5%;left:-34px;width:114px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom" style="bottom:5%;right:-32px;width:126px;animation-delay:-2.5s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap">
         <div class="scroll-paper reveal">
           <div class="cross"><i class="fa-solid fa-hands-praying"></i></div>
@@ -728,6 +846,8 @@
 
     <!-- ============ 8. RSVP ============ -->
     <section class="rsvp" id="rsvp">
+      <span class="bloom bloom--soft" style="top:4%;right:-36px;width:116px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom bloom--soft" style="bottom:4%;left:-36px;width:106px;animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap text-center">
         <span class="eyebrow reveal">Confirmación de asistencia</span>
         <h2 class="title reveal d1">¿Nos acompañas?</h2>
@@ -745,6 +865,8 @@
 
     <!-- ============ CIERRE ============ -->
     <section class="closing" id="gracias">
+      <span class="bloom" style="top:2%;left:-34px;width:124px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
+      <span class="bloom" style="bottom:6%;right:-34px;width:130px;animation-delay:-3s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap text-center">
         <div class="ornament reveal"><span></span><i class="fa-solid fa-heart"></i><span></span></div>
         <p class="reveal d1 serif" style="font-style:italic;font-size:clamp(17px,4.6vw,21px);color:var(--ink);max-width:34ch;margin:0 auto;">
