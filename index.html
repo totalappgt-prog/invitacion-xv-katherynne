@@ -97,8 +97,8 @@
     .bloom--bold{ opacity:.7; }
     .bloom svg{ width:100%; height:100%; display:block; }
     @keyframes sway{
-      0%,100%{ transform:rotate(-4deg) translateY(0); }
-      50%{ transform:rotate(4deg) translateY(-6px); }
+      0%,100%{ transform:translate3d(0,var(--py,0px),0) rotate(-4deg); }
+      50%{ transform:translate3d(0,calc(var(--py,0px) - 6px),0) rotate(4deg); }
     }
     @media (prefers-reduced-motion:reduce){ .bloom{ animation:none; } }
 
@@ -356,7 +356,7 @@
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
     }
-    .hero__title.is-visible .w{ animation:wordUp .95s cubic-bezier(.2,.75,.2,1) backwards; }
+    .hero__title.is-visible .w{ animation:wordUp .95s cubic-bezier(.2,.75,.2,1) backwards, gradShift 7s ease-in-out infinite; }
     .hero__title .w:nth-child(1){ animation-delay:.10s; }
     .hero__title .w:nth-child(2){ animation-delay:.30s; }
     .hero__title .w:nth-child(3){ animation-delay:.50s; }
@@ -623,6 +623,58 @@
     }
     .float-wa:hover{ transform:scale(1.08); }
 
+    /* ---------- Barra de progreso de scroll ---------- */
+    .progress{
+      position:fixed; top:0; left:0; height:3px; width:0; z-index:90;
+      background:linear-gradient(90deg,#E4C87F,#C76D86,#A94E6A);
+      box-shadow:0 0 14px rgba(201,109,134,.7);
+      border-radius:0 3px 3px 0;
+    }
+
+    /* ---------- Botón de música de fondo ---------- */
+    .music-btn{
+      position:fixed; left:18px; bottom:18px; z-index:60;
+      width:52px; height:52px; padding:0; border-radius:50%;
+      border:1px solid rgba(198,160,82,.6);
+      display:grid; place-items:center; cursor:pointer;
+      background:linear-gradient(140deg,#fff,#FDEFF3);
+      color:var(--rose-deep); font-size:18px;
+      box-shadow:0 16px 32px -16px rgba(146,79,101,.6);
+      transition:transform .25s ease, background .35s ease, color .35s ease;
+    }
+    .music-btn:hover{ transform:translateY(-2px) scale(1.04); }
+    .music-btn i{ position:relative; z-index:2; }
+    .music-btn::before{
+      content:""; position:absolute; inset:0; border-radius:50%;
+      border:2px solid rgba(201,109,134,.5);
+      animation:ripple 2.8s ease-out infinite; pointer-events:none;
+    }
+    .music-btn.is-playing{ background:var(--grad-title); color:#fff; border-color:transparent; }
+    .music-btn.is-playing::before{ display:none; }
+    .music-btn.is-playing i.fa-music{ display:none; }
+    .music-btn__bars{ display:none; position:absolute; gap:3px; align-items:flex-end; height:14px; z-index:2; }
+    .music-btn.is-playing .music-btn__bars{ display:flex; }
+    .music-btn__bars b{ width:3px; height:6px; border-radius:2px; background:rgba(255,255,255,.92); animation:eq 1s ease-in-out infinite; }
+    .music-btn__bars b:nth-child(1){ animation-delay:0s; }
+    .music-btn__bars b:nth-child(2){ animation-delay:.18s; }
+    .music-btn__bars b:nth-child(3){ animation-delay:.36s; }
+    @keyframes eq{ 0%,100%{ height:5px; } 50%{ height:14px; } }
+
+    /* ---------- Botón volver arriba ---------- */
+    .to-top{
+      position:fixed; right:18px; bottom:88px; z-index:60;
+      width:46px; height:46px; padding:0; border-radius:50%; cursor:pointer;
+      display:grid; place-items:center;
+      background:linear-gradient(140deg,#fff,#FDEFF3);
+      border:1px solid rgba(198,160,82,.55);
+      color:var(--rose-deep); font-size:15px;
+      box-shadow:0 14px 30px -16px rgba(146,79,101,.6);
+      opacity:0; visibility:hidden; transform:translateY(14px);
+      transition:opacity .35s ease, transform .35s ease, visibility .35s;
+    }
+    .to-top.is-shown{ opacity:1; visibility:visible; transform:none; }
+    .to-top:hover{ transform:translateY(-3px) scale(1.05); }
+
     /* =========================================================
        Animaciones reveal
        ========================================================= */
@@ -660,6 +712,73 @@
       0%{ transform:scale(1); opacity:.75; }
       100%{ transform:scale(1.75); opacity:0; }
     }
+
+    /* =========================================================
+       Animaciones extra
+       ========================================================= */
+
+    /* Degradado en movimiento sobre los títulos */
+    .hero__monogram, .envelope__name, .closing__signature, .scroll-paper .amen, .parents__amp, .hero__title .w{
+      background-size:220% auto;
+    }
+    .hero__monogram, .envelope__name, .closing__signature, .scroll-paper .amen, .parents__amp{
+      animation:gradShift 7s ease-in-out infinite;
+    }
+    @keyframes gradShift{
+      0%,100%{ background-position:0% 50%; }
+      50%{ background-position:100% 50%; }
+    }
+
+    /* Medallón: anillo girando + brillo pulsante */
+    .hero__medallion{ animation:medalGlow 4.8s ease-in-out infinite; }
+    .hero__medallion::after{ animation:spin 28s linear infinite; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+    @keyframes medalGlow{
+      0%,100%{ box-shadow:0 26px 55px -26px rgba(146,79,101,.6), inset 0 0 0 6px rgba(255,255,255,.65); }
+      50%{ box-shadow:0 32px 72px -26px rgba(201,109,134,.78), inset 0 0 0 6px rgba(255,255,255,.9); }
+    }
+
+    /* Halo que se desplaza en el hero */
+    .hero__glow{
+      position:absolute; inset:-20%; z-index:1; pointer-events:none;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(243,194,209,.6), transparent 42%),
+        radial-gradient(circle at 72% 68%, rgba(228,200,127,.5), transparent 44%);
+      animation:drift 22s ease-in-out infinite alternate;
+    }
+    @keyframes drift{
+      0%{ transform:translate3d(-4%,-3%,0) scale(1); }
+      100%{ transform:translate3d(5%,4%,0) scale(1.14); }
+    }
+
+    /* Destellos en el hero */
+    .sparkles{ position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+    .sparkle{
+      position:absolute; width:4px; height:4px; border-radius:50%;
+      background:#fff;
+      box-shadow:0 0 8px rgba(255,255,255,.95), 0 0 16px rgba(228,200,127,.85);
+      animation:twinkle var(--tw,3.2s) ease-in-out infinite;
+    }
+    @keyframes twinkle{
+      0%,100%{ opacity:0; transform:scale(.3); }
+      50%{ opacity:1; transform:scale(1); }
+    }
+
+    /* Entrada palabra por palabra de los títulos */
+    .title .tw{ display:inline-block; opacity:0; transform:translateY(20px) rotateX(-45deg); transform-origin:bottom; }
+    .title.is-in .tw{ animation:twIn .85s cubic-bezier(.2,.75,.2,1) forwards; }
+    @keyframes twIn{ to{ opacity:1; transform:none; } }
+
+    /* Divisores que se dibujan */
+    .ornament::before, .ornament::after{
+      transform:scaleX(0);
+      transition:transform 1.1s cubic-bezier(.2,.75,.2,1) .15s;
+    }
+    .ornament::before{ transform-origin:right center; }
+    .ornament::after{ transform-origin:left center; }
+    .ornament.is-in::before, .ornament.is-in::after{ transform:scaleX(1); }
+    .ornament i{ transform:scale(0); transition:transform .6s cubic-bezier(.2,1.5,.4,1) .55s; }
+    .ornament.is-in i{ transform:scale(1); }
 
     .countdown__num{ transform-origin:center bottom; }
     .countdown__num.tick{ animation:flipIn .55s cubic-bezier(.2,.75,.2,1); color:var(--gold); }
@@ -699,16 +818,25 @@
       .countdown{ gap:16px; }
       .venue-map iframe{ height:340px; }
       .float-wa{ right:28px; bottom:28px; }
+      .music-btn{ left:28px; bottom:28px; }
+      .to-top{ right:28px; bottom:100px; }
     }
 
     @media (prefers-reduced-motion:reduce){
       *{ animation:none !important; transition:none !important; }
       .reveal{ opacity:1; transform:none; }
       .envelope{ display:none; }
+      .petals, .sparkles, .hero__glow, .progress{ display:none; }
+      .title .tw{ opacity:1; transform:none; }
+      .ornament::before, .ornament::after{ transform:none; }
+      .ornament i{ transform:none; }
+      .to-top{ display:none; }
     }
   </style>
 </head>
 <body class="is-locked">
+
+  <div class="progress" id="progress" aria-hidden="true"></div>
 
   <!-- ============ JARDÍN DE ROSAS (símbolo SVG reutilizable) ============ -->
   <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
@@ -786,6 +914,8 @@
     <section class="hero" id="inicio">
       <div class="hero__bg" id="heroBg" aria-hidden="true"></div>
       <div class="hero__veil" aria-hidden="true"></div>
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="sparkles" id="sparkles" aria-hidden="true"></div>
 
       <span class="bloom" style="top:4%;left:-36px;width:132px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <span class="bloom bloom--soft" style="top:17%;right:-30px;width:104px;animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
@@ -1054,6 +1184,15 @@
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 
+  <button class="to-top" id="toTop" type="button" aria-label="Volver arriba">
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <button class="music-btn" id="musicBtn" type="button" aria-pressed="false" aria-label="Activar música de fondo">
+    <i class="fa-solid fa-music"></i>
+    <span class="music-btn__bars" aria-hidden="true"><b></b><b></b><b></b></span>
+  </button>
+
   <script>
     /* =========================================================
        CONFIGURACIÓN — EDITA AQUÍ TODO LO QUE NECESITES
@@ -1212,6 +1351,7 @@
       }, 850);
 
       petalBurst();
+      startMusic();
       setTimeout(() => { env.style.display = "none"; }, 1700);
       window.scrollTo(0, 0);
     }
@@ -1221,15 +1361,78 @@
       set: () => { try { sessionStorage.setItem("inv-open", "1"); } catch (e) {} }
     };
 
+    /* =========================================================
+       MÚSICA DE FONDO
+       ========================================================= */
+    const MUSIC_SRC = "assets/music.mp3";
+    const MUSIC_VOL = 0.55;
+    let music = null, musicOn = false, fadeTimer = null;
+    const musicBtn = $("#musicBtn");
+
+    function ensureMusic(){
+      if (!music){
+        music = new Audio(MUSIC_SRC);
+        music.loop = true;
+        music.preload = "auto";
+        music.volume = 0;
+      }
+      return music;
+    }
+    function setMusicUI(on){
+      musicBtn.classList.toggle("is-playing", on);
+      musicBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      musicBtn.setAttribute("aria-label", on ? "Desactivar música de fondo" : "Activar música de fondo");
+    }
+    function fadeTo(target, ms){
+      clearInterval(fadeTimer);
+      const start = music.volume;
+      const steps = Math.max(1, Math.round(ms / 50));
+      let i = 0;
+      fadeTimer = setInterval(() => {
+        i++;
+        music.volume = Math.min(1, Math.max(0, start + (target - start) * (i / steps)));
+        if (i >= steps){ music.volume = target; clearInterval(fadeTimer); }
+      }, 50);
+    }
+    function startMusic(){
+      if (musicOn) return;
+      const m = ensureMusic();
+      const p = m.play();
+      const ok = () => { musicOn = true; setMusicUI(true); fadeTo(MUSIC_VOL, 2200); };
+      if (p && p.then) p.then(ok).catch(() => {});
+      else ok();
+    }
+    function stopMusic(){
+      if (!music) return;
+      musicOn = false;
+      setMusicUI(false);
+      fadeTo(0, 400);
+      setTimeout(() => { if (!musicOn && music) music.pause(); }, 420);
+    }
+    musicBtn.addEventListener("click", (e) => { e.stopPropagation(); musicOn ? stopMusic() : startMusic(); });
+
+    function armAutoStart(){
+      const once = (e) => {
+        if (e && e.target && e.target.closest && e.target.closest("#musicBtn")) return;
+        startMusic();
+        document.removeEventListener("pointerdown", once, true);
+        document.removeEventListener("keydown", once, true);
+      };
+      document.addEventListener("pointerdown", once, true);
+      document.addEventListener("keydown", once, true);
+    }
+
     if (prefersReduced){
       document.body.classList.remove("is-locked");
       $("#envelope").style.display = "none";
+      armAutoStart();
     } else {
       const env = $("#envelope");
       // Si ya la vio en esta sesión, no volver a mostrar el sobre
       if (store.get() === "1"){
         document.body.classList.remove("is-locked");
         env.style.display = "none";
+        armAutoStart();
       }
       env.addEventListener("click", openInvitation);
       env.addEventListener("keydown", (e) => {
@@ -1276,16 +1479,96 @@
       for (let i = 0; i < count; i++) makePetal(true);
     }
 
-    // Parallax del hero
+    /* =========================================================
+       EXTRAS: progreso, volver arriba, destellos, títulos y parallax
+       ========================================================= */
     const heroBg = $("#heroBg");
-    if (!prefersReduced && heroBg){
-      window.addEventListener("scroll", () => {
-        const y = window.scrollY;
-        if (y < window.innerHeight){
-          heroBg.style.transform = `translateY(${y * 0.28}px) scale(1.06)`;
-        }
-      }, { passive: true });
+    const progressEl = $("#progress");
+    const toTopBtn = $("#toTop");
+
+    // --- Barra de progreso de scroll ---
+    function updateProgress(){
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progressEl.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0).toFixed(2) + "%";
     }
+
+    // --- Botón volver arriba ---
+    toTopBtn.addEventListener("click", () => window.scrollTo({ top:0, behavior:"smooth" }));
+
+    // --- Títulos: entrada palabra por palabra ---
+    $$(".title").forEach((el) => {
+      if (el.dataset.split === "1") return;
+      const words = el.textContent.trim().split(/\s+/);
+      el.dataset.split = "1";
+      el.innerHTML = words
+        .map((w, i) => '<span class="tw" style="animation-delay:' + (i * 70) + 'ms">' + w + "</span>")
+        .join(" ");
+    });
+
+    // --- Divisores que se dibujan y títulos que entran ---
+    const accentIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting){ e.target.classList.add("is-in"); accentIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.35, rootMargin: "0px 0px -30px 0px" });
+    $$(".title, .ornament").forEach((el) => accentIO.observe(el));
+
+    // --- Destellos del hero ---
+    (function makeSparkles(){
+      const layer = $("#sparkles");
+      if (!layer || prefersReduced) return;
+      const n = window.innerWidth < 700 ? 18 : 30;
+      for (let i = 0; i < n; i++){
+        const s = document.createElement("span");
+        const size = 2 + Math.random() * 3;
+        s.className = "sparkle";
+        s.style.left = (Math.random() * 100).toFixed(2) + "%";
+        s.style.top = (Math.random() * 100).toFixed(2) + "%";
+        s.style.width = size + "px";
+        s.style.height = size + "px";
+        s.style.setProperty("--tw", (2.2 + Math.random() * 3).toFixed(2) + "s");
+        s.style.animationDelay = (-Math.random() * 4).toFixed(2) + "s";
+        layer.appendChild(s);
+      }
+    })();
+
+    // --- Parallax de las rosas + hero + scroll UI ---
+    const blooms = $$(".bloom");
+    let bases = [];
+    function measureBlooms(){
+      bases = blooms.map((b) => b.getBoundingClientRect().top + window.scrollY);
+    }
+
+    let ticking = false;
+    function onScroll(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const vh = window.innerHeight;
+        const y = window.scrollY;
+
+        updateProgress();
+        toTopBtn.classList.toggle("is-shown", y > vh * 0.9);
+
+        if (!prefersReduced){
+          for (let i = 0; i < blooms.length; i++){
+            const rel = bases[i] - y - vh / 2;
+            blooms[i].style.setProperty("--py", (rel * 0.06).toFixed(1) + "px");
+          }
+          if (heroBg && y < vh){
+            heroBg.style.transform = `translateY(${y * 0.28}px) scale(1.06)`;
+          }
+        }
+        ticking = false;
+      });
+    }
+
+    measureBlooms();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", () => { measureBlooms(); onScroll(); });
+    window.addEventListener("load", () => { measureBlooms(); onScroll(); });
+    updateProgress();
+    onScroll();
   </script>
 </body>
 </html>
