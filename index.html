@@ -102,78 +102,154 @@
     }
     @media (prefers-reduced-motion:reduce){ .bloom{ animation:none; } }
 
+    /* ---------- Pétalos que caen ---------- */
+    .petals{ position:fixed; inset:0; z-index:3; pointer-events:none; overflow:hidden; }
+    .petal{
+      position:absolute; top:-70px; opacity:.6;
+      animation:fall linear infinite;
+      will-change:transform;
+    }
+    .petal svg{ width:100%; height:100%; display:block; }
+    @keyframes fall{
+      0%{ transform:translate3d(0,-10vh,0) rotate(0deg); }
+      100%{ transform:translate3d(var(--dx,40px),112vh,0) rotate(var(--rot,540deg)); }
+    }
+    .petal--burst{ animation-name:burst; animation-timing-function:cubic-bezier(.2,.7,.3,1); animation-fill-mode:forwards; }
+    @keyframes burst{
+      0%{ transform:translate3d(0,0,0) scale(.4) rotate(0deg); opacity:0; }
+      15%{ opacity:1; }
+      100%{ transform:translate3d(var(--dx,60px),-52vh,0) scale(1.1) rotate(var(--rot,360deg)); opacity:0; }
+    }
+    @media (prefers-reduced-motion:reduce){ .petals{ display:none; } }
+
     /* =========================================================
-       1. SOBRE / PORTADA
+       1. SOBRE INTERACTIVO (toca el sobre para abrir)
        ========================================================= */
     .envelope{
       position:fixed; inset:0; z-index:100;
-      display:flex; align-items:center; justify-content:center;
-      padding:24px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:24px; cursor:pointer; user-select:none;
+      -webkit-tap-highlight-color:transparent;
       background:
-        radial-gradient(circle at 18% 12%, rgba(243,194,209,.55), transparent 55%),
-        radial-gradient(circle at 88% 88%, rgba(228,200,127,.42), transparent 55%),
-        linear-gradient(160deg,#FDF8F5 0%,#F8E1E5 55%,#F3E3D2 100%);
-      transition:opacity .9s ease, visibility .9s ease;
+        radial-gradient(circle at 18% 12%, rgba(243,194,209,.6), transparent 55%),
+        radial-gradient(circle at 88% 88%, rgba(228,200,127,.45), transparent 55%),
+        linear-gradient(160deg,#FEFAF8 0%,#F9E2E8 55%,#F5E3D5 100%);
+      transition:opacity .8s ease, visibility .8s ease;
     }
-    .envelope.is-open{ opacity:0; visibility:hidden; }
+    .envelope.is-open{ opacity:0; visibility:hidden; pointer-events:none; }
 
-    .envelope__inner{
-      position:relative;
-      width:100%; max-width:380px;
-      border-radius:24px;
-      padding:40px 26px 34px;
-      text-align:center;
-      background:linear-gradient(180deg,#fff 0%,#FDF0F3 60%,#FBF0E3 100%);
-      border:1px solid rgba(198,160,82,.45);
-      box-shadow:0 40px 90px -40px rgba(146,79,101,.6);
-      overflow:hidden;
+    .envelope__head{ position:relative; z-index:2; text-align:center; margin-bottom:22px; }
+    .envelope__top{
+      font-size:11px; letter-spacing:.44em; text-transform:uppercase;
+      color:var(--rose-deep); margin:0 0 4px;
     }
-    .envelope__inner::before{
-      content:"";
-      position:absolute; inset:0;
-      background-image:
-        linear-gradient(rgba(201,166,107,.5),rgba(201,166,107,.5)),
-        linear-gradient(rgba(201,166,107,.5),rgba(201,166,107,.5));
-      background-size:100% 1px, 1px 100%;
-      background-position:center 14px, 14px center;
-      background-repeat:no-repeat;
-      opacity:.5; pointer-events:none;
-    }
-
-    .envelope__seal{
-      width:78px; height:78px; margin:0 auto 18px;
-      display:grid; place-items:center;
-      border-radius:50%;
-      background:var(--grad-rose);
-      color:#fff; font-size:30px;
-      box-shadow:0 14px 30px -12px rgba(183,110,121,.8);
-      animation:sealPulse 3.2s ease-in-out infinite;
-    }
-    @keyframes sealPulse{
-      0%,100%{ transform:scale(1); }
-      50%{ transform:scale(1.05); }
-    }
-
-    .envelope__top{ font-size:12px; letter-spacing:.42em; text-transform:uppercase; color:var(--rose-deep); margin:0 0 6px; }
     .envelope__name{
-      font-family:var(--font-script); font-size:40px; margin:0 0 4px;
+      font-family:var(--font-script); font-size:clamp(42px,13vw,60px);
+      margin:0; padding:.06em .14em .12em; line-height:1.1;
       background:var(--grad-title);
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
     }
-    .envelope__sub{ font-family:var(--font-serif); font-size:15px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 26px; }
 
-    .envelope__btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:14px 30px; border:0; cursor:pointer;
-      border-radius:999px; font-family:var(--font-sans); font-weight:600;
-      font-size:14px; letter-spacing:.08em; text-transform:uppercase;
-      color:#fff; background:var(--grad-rose);
-      box-shadow:0 16px 34px -16px rgba(183,110,121,.9);
-      transition:transform .25s ease, box-shadow .25s ease;
+    .envelope__stage{
+      position:relative; z-index:2;
+      perspective:1300px;
+      margin-bottom:24px;
     }
-    .envelope__btn:hover{ transform:translateY(-2px); box-shadow:0 22px 40px -16px rgba(183,110,121,.95); }
-    .envelope__hint{ margin:16px 0 0; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); }
+
+    .env{
+      position:relative;
+      width:min(300px,78vw); height:min(196px,51vw);
+      transform-style:preserve-3d;
+      transition:transform .9s cubic-bezier(.2,.75,.2,1);
+    }
+    .envelope.is-open .env{ transform:translateY(46px) scale(.92); }
+
+    .env__back{
+      position:absolute; inset:0; border-radius:14px;
+      background:linear-gradient(180deg,#FBEFF3,#F4D6E0);
+      box-shadow:0 30px 60px -26px rgba(146,79,101,.7);
+    }
+
+    /* La carta que sale del sobre */
+    .env__letter{
+      position:absolute; left:7%; right:7%; bottom:9%; height:78%;
+      border-radius:9px; z-index:1;
+      background:linear-gradient(180deg,#fff 0%,#FFF5F8 60%,#FDF2E6 100%);
+      border:1px solid rgba(198,160,82,.55);
+      box-shadow:0 -8px 26px -14px rgba(146,79,101,.55);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      transform:translateY(8%);
+      transition:transform .95s cubic-bezier(.2,.75,.2,1) .4s, opacity .5s ease .4s;
+    }
+    .envelope.is-open .env__letter{ transform:translateY(-74%); }
+    .env__letter-script{
+      font-family:var(--font-script); font-size:30px;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+      padding:.06em .1em;
+    }
+    .env__letter-sub{
+      font-family:var(--font-serif); font-size:12px; letter-spacing:.28em;
+      text-transform:uppercase; color:var(--ink-soft);
+    }
+
+    /* Solapa superior */
+    .env__flap{
+      position:absolute; left:0; right:0; top:0; height:64%; z-index:3;
+      background:linear-gradient(180deg,#F5BCCB,#E79AAE);
+      clip-path:polygon(0 0,100% 0,50% 100%);
+      transform-origin:top center;
+      transition:transform .8s cubic-bezier(.45,.05,.25,1);
+      backface-visibility:hidden;
+    }
+    .envelope.is-open .env__flap{ transform:rotateX(-180deg); z-index:0; }
+
+    /* Frente tipo bolsillo */
+    .env__front{
+      position:absolute; inset:0; border-radius:14px; z-index:2;
+      background:linear-gradient(180deg,#F8D9E2 0%,#F1C2D0 100%);
+      clip-path:polygon(0 0,50% 44%,100% 0,100% 100%,0 100%);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+    }
+    .env__front::after{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(115deg, rgba(255,255,255,.45) 0 44%, transparent 44%);
+      clip-path:polygon(0 100%,50% 44%,100% 100%);
+      opacity:.55;
+    }
+
+    /* Sello dorado */
+    .env__seal{
+      position:absolute; left:50%; top:44%; transform:translate(-50%,-50%);
+      width:58px; height:58px; border-radius:50%; z-index:4;
+      display:grid; place-items:center; color:#fff; font-size:20px;
+      background:var(--grad-gold);
+      box-shadow:0 12px 26px -12px rgba(166,124,40,.95), inset 0 0 0 3px rgba(255,255,255,.35);
+      transition:opacity .4s ease, transform .5s ease;
+    }
+    .envelope.is-open .env__seal{ opacity:0; transform:translate(-50%,-50%) scale(.35) rotate(-25deg); }
+
+    .envelope__hint{
+      position:relative; z-index:2; margin:0;
+      font-size:11px; letter-spacing:.34em; text-transform:uppercase;
+      color:var(--rose-deep); font-weight:600;
+      animation:hintPulse 2s ease-in-out infinite;
+    }
+    @keyframes hintPulse{
+      0%,100%{ opacity:.55; transform:translateY(0); }
+      50%{ opacity:1; transform:translateY(-3px); }
+    }
+    .envelope__finger{
+      position:relative; z-index:2; margin-top:10px; font-size:19px; color:var(--rose);
+      animation:tap 1.6s ease-in-out infinite;
+    }
+    @keyframes tap{
+      0%,100%{ transform:translateY(0) scale(1); }
+      50%{ transform:translateY(-7px) scale(1.1); }
+    }
+    .envelope:focus-visible{ outline:2px dashed var(--rose); outline-offset:-10px; }
 
     /* =========================================================
        Estructura general
@@ -257,7 +333,8 @@
       border:1px dashed rgba(201,109,134,.5);
     }
     .hero__monogram{
-      font-family:var(--font-script); font-size:46px; line-height:1;
+      font-family:var(--font-script); font-size:46px; line-height:1.2;
+      padding:.04em .1em .12em;
       background:var(--grad-title);
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
@@ -265,13 +342,27 @@
 
     .hero__eyebrow{ font-size:clamp(9px,2.6vw,11px); letter-spacing:.42em; text-transform:uppercase; color:var(--rose-deep); margin:0 0 10px; }
     .hero__title{
-      font-family:var(--font-script); font-size:clamp(40px,12vw,80px);
-      line-height:1.02; margin:0;
-      padding:2px 6px 6px; overflow-wrap:break-word;
+      font-family:var(--font-script); font-size:clamp(38px,11.5vw,78px);
+      line-height:1.28; margin:0;
+      padding:.2em .26em .26em; overflow-wrap:break-word;
       background:var(--grad-title);
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
       filter:drop-shadow(0 6px 14px rgba(201,109,134,.22));
+    }
+    .hero__title .w{
+      display:inline-block; padding:.02em .04em;
+      background:var(--grad-title);
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:var(--rose-deep);
+    }
+    .hero__title.is-visible .w{ animation:wordUp .95s cubic-bezier(.2,.75,.2,1) backwards; }
+    .hero__title .w:nth-child(1){ animation-delay:.10s; }
+    .hero__title .w:nth-child(2){ animation-delay:.30s; }
+    .hero__title .w:nth-child(3){ animation-delay:.50s; }
+    @keyframes wordUp{
+      0%{ opacity:0; transform:translateY(26px) scale(.94); filter:blur(6px); }
+      100%{ opacity:1; transform:none; filter:blur(0); }
     }
     .hero__name{
       font-family:var(--font-serif); font-weight:500; letter-spacing:.12em;
@@ -367,7 +458,8 @@
     .parents__names{ margin-top:20px; display:grid; gap:8px; }
     .parents__name{ font-family:var(--font-serif); font-size:clamp(19px,5vw,24px); color:var(--ink); }
     .parents__amp{
-      font-family:var(--font-script); font-size:32px;
+      font-family:var(--font-script); font-size:32px; line-height:1.25;
+      padding:.04em .12em .14em;
       background:var(--grad-title);
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose);
@@ -480,6 +572,7 @@
     }
     .scroll-paper .amen{
       margin-top:18px; font-family:var(--font-script); font-size:32px;
+      line-height:1.3; padding:.04em .12em .14em;
       background:var(--grad-title);
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
@@ -506,6 +599,7 @@
     }
     .closing__signature{
       font-family:var(--font-script); font-size:clamp(38px,11vw,54px); margin:10px 0 0;
+      line-height:1.3; padding:.06em .16em .16em;
       background:var(--grad-title);
       -webkit-background-clip:text; background-clip:text;
       -webkit-text-fill-color:transparent; color:var(--rose-deep);
@@ -532,11 +626,69 @@
     /* =========================================================
        Animaciones reveal
        ========================================================= */
-    .reveal{ opacity:0; transform:translateY(26px); transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
+    .reveal{ opacity:0; transform:translateY(30px); transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
     .reveal.is-visible{ opacity:1; transform:none; }
     .reveal.d1{ transition-delay:.10s; }
-    .reveal.d2{ transition-delay:.20s; }
-    .reveal.d3{ transition-delay:.30s; }
+    .reveal.d2{ transition-delay:.22s; }
+    .reveal.d3{ transition-delay:.34s; }
+    .reveal.d4{ transition-delay:.46s; }
+    .reveal--left{ transform:translateX(-40px); }
+    .reveal--right{ transform:translateX(40px); }
+    .reveal--zoom{ transform:scale(.88); }
+    .reveal--flip{ transform:perspective(800px) rotateX(-16deg) translateY(26px); }
+
+    /* =========================================================
+       Movimiento: brillo, pulso, elevación
+       ========================================================= */
+    .btn--primary, .btn--whatsapp{ position:relative; overflow:hidden; }
+    .btn--primary::after, .btn--whatsapp::after{
+      content:""; position:absolute; top:-10%; bottom:-10%; left:-70%; width:45%;
+      background:linear-gradient(115deg, transparent, rgba(255,255,255,.55), transparent);
+      transform:skewX(-18deg);
+      animation:shine 4.6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes shine{ 0%,68%{ left:-70%; } 100%{ left:140%; } }
+
+    .float-wa::before{
+      content:""; position:absolute; inset:0; border-radius:50%;
+      border:2px solid rgba(31,168,85,.55);
+      animation:ripple 2.6s ease-out infinite;
+      pointer-events:none;
+    }
+    @keyframes ripple{
+      0%{ transform:scale(1); opacity:.75; }
+      100%{ transform:scale(1.75); opacity:0; }
+    }
+
+    .countdown__num{ transform-origin:center bottom; }
+    .countdown__num.tick{ animation:flipIn .55s cubic-bezier(.2,.75,.2,1); color:var(--gold); }
+    @keyframes flipIn{
+      0%{ transform:rotateX(-75deg) translateY(-4px); opacity:.25; }
+      100%{ transform:none; opacity:1; }
+    }
+
+    .date-badge{ animation:floaty 5.5s ease-in-out infinite; }
+    .icon-circle{ animation:floaty 6.5s ease-in-out infinite; }
+    @keyframes floaty{
+      0%,100%{ transform:translateY(0); }
+      50%{ transform:translateY(-7px); }
+    }
+
+    @media (hover:hover){
+      .card:not(.reveal), .card.reveal.is-visible{ transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease; }
+      .card:hover{ transform:translateY(-7px); box-shadow:0 32px 72px -32px rgba(146,79,101,.62); }
+      .place:hover .place__icon{ transform:rotate(-8deg) scale(1.08); }
+      .place__icon{ transition:transform .4s ease; }
+      .swatch{ transition:transform .35s ease; }
+      .swatch:hover{ transform:translateY(-6px) scale(1.08); }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      .btn--primary::after, .btn--whatsapp::after, .float-wa::before,
+      .date-badge, .icon-circle{ animation:none !important; }
+      .reveal{ opacity:1; transform:none; }
+    }
 
     /* =========================================================
        Responsive
@@ -570,6 +722,10 @@
         <stop offset="0%" stop-color="#FBD3DF"/>
         <stop offset="100%" stop-color="#E2909F"/>
       </linearGradient>
+      <symbol id="petal" viewBox="0 0 40 60">
+        <path d="M20 2 C 34 14, 40 34, 20 58 C 0 34, 6 14, 20 2 Z"
+              fill="url(#petal-pink)" stroke="#C6A052" stroke-width="1" stroke-opacity=".4"/>
+      </symbol>
       <symbol id="rose" viewBox="0 0 120 130">
         <g transform="translate(60,62)">
           <path d="M-6 27 C -36 22, -48 44, -31 55 C -13 61, -1 45, -6 27 Z" fill="#BBD4B3" opacity=".85"/>
@@ -596,21 +752,32 @@
   </svg>
 
   <!-- ============ SOBRE DE APERTURA ============ -->
-  <div class="envelope" id="envelope">
+  <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Toca el sobre para abrir la invitación">
     <span class="bloom" style="top:6%;left:4%;width:110px;opacity:.5" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
     <span class="bloom" style="bottom:6%;right:4%;width:124px;opacity:.5;animation-delay:-2s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
     <span class="bloom bloom--soft" style="top:24%;right:9%;width:78px;animation-delay:-4s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
     <span class="bloom bloom--soft" style="bottom:20%;left:8%;width:88px;animation-delay:-3s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
-    <div class="envelope__inner">
-      <div class="envelope__seal"><i class="fa-solid fa-envelope-open-text"></i></div>
+
+    <div class="envelope__head">
       <p class="envelope__top">Mis XVI Años</p>
       <p class="envelope__name">Katherynne</p>
-      <p class="envelope__sub">Villanueva</p>
-      <button class="envelope__btn" id="openBtn" type="button" aria-label="Abrir invitación">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> Abrir invitación
-      </button>
-      <p class="envelope__hint">Sábado 05 · 12 · 2026</p>
     </div>
+
+    <div class="envelope__stage">
+      <div class="env">
+        <div class="env__back" aria-hidden="true"></div>
+        <div class="env__letter" aria-hidden="true">
+          <span class="env__letter-script">Katherynne</span>
+          <span class="env__letter-sub">XVI Años</span>
+        </div>
+        <div class="env__flap" aria-hidden="true"></div>
+        <div class="env__front" aria-hidden="true"></div>
+        <div class="env__seal" aria-hidden="true"><i class="fa-solid fa-heart"></i></div>
+      </div>
+    </div>
+
+    <p class="envelope__hint">Toca el sobre para abrir</p>
+    <span class="envelope__finger" aria-hidden="true"><i class="fa-solid fa-hand-pointer"></i></span>
   </div>
 
   <main id="main">
@@ -631,7 +798,7 @@
         </div>
 
         <p class="hero__eyebrow reveal d1">Con la bendición de Dios</p>
-        <h1 class="hero__title script reveal d1">Mis XVI Años</h1>
+        <h1 class="hero__title script reveal d1"><span class="w">Mis</span> <span class="w">XVI</span> <span class="w">Años</span></h1>
         <h2 class="hero__name serif reveal d2"><span>Katherynne</span><span>Villanueva</span></h2>
 
         <div class="ornament reveal d2"><span></span><i class="fa-solid fa-star"></i><span></span></div>
@@ -704,7 +871,7 @@
           <li><i class="fa-solid fa-dove"></i> Gracias Señor por permitirnos compartir este momento tan especial.</li>
         </ul>
 
-        <div class="card reveal d2" style="margin-top:34px">
+        <div class="card reveal reveal--zoom d2" style="margin-top:34px">
           <p style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--rose-deep);margin:0 0 16px;">En compañía de Dios y mis papás</p>
           <div class="parents__names">
             <span class="parents__name serif">Jovel Villanueva</span>
@@ -737,7 +904,7 @@
 
         <div class="place-grid">
           <!-- Acto Religioso -->
-          <article class="card place reveal d1" style="text-align:left">
+          <article class="card place reveal reveal--left d1" style="text-align:left">
             <div class="place__icon"><i class="fa-solid fa-church"></i></div>
             <h3>Acto Religioso</h3>
             <p class="place__time" data-bind="ceremonia-hora"></p>
@@ -754,7 +921,7 @@
           </article>
 
           <!-- Recepción -->
-          <article class="card place reveal d2" style="text-align:left">
+          <article class="card place reveal reveal--right d2" style="text-align:left">
             <div class="place__icon"><i class="fa-solid fa-champagne-glasses"></i></div>
             <h3>Recepción</h3>
             <p class="place__time" data-bind="recepcion-hora"></p>
@@ -832,7 +999,7 @@
       <span class="bloom" style="top:5%;left:-34px;width:114px" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <span class="bloom" style="bottom:5%;right:-32px;width:126px;animation-delay:-2.5s" aria-hidden="true"><svg viewBox="0 0 120 130"><use href="#rose"/></svg></span>
       <div class="wrap">
-        <div class="scroll-paper reveal">
+        <div class="scroll-paper reveal reveal--zoom">
           <div class="cross"><i class="fa-solid fa-hands-praying"></i></div>
           <p>
             “Señor, gracias por la vida de mi hija, por estos 16 años llenos de aprendizaje, amor y bendiciones.
@@ -992,7 +1159,7 @@
       if (el.textContent !== next){
         el.textContent = next;
         el.classList.add("tick");
-        setTimeout(() => el.classList.remove("tick"), 260);
+        setTimeout(() => el.classList.remove("tick"), 620);
       }
     }
 
@@ -1026,13 +1193,26 @@
        ========================================================= */
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    let opened = false;
+
     function openInvitation(){
+      if (opened) return;
+      opened = true;
       const env = $("#envelope");
-      env.classList.add("is-open");
+      store.set();
+
+      env.classList.add("is-open");           // abre la solapa + sale la carta
       document.body.classList.remove("is-locked");
-      setTimeout(() => { env.style.display = "none"; }, 950);
-      // fuerza el reveal del hero
-      $$(".hero .reveal").forEach((el, i) => setTimeout(() => el.classList.add("is-visible"), 120 * i));
+
+      // El hero entra con su propia animación en cascada
+      document.querySelectorAll(".hero .reveal").forEach((el) => el.classList.remove("is-visible"));
+      setTimeout(() => {
+        document.querySelectorAll(".hero .reveal").forEach((el, i) =>
+          setTimeout(() => el.classList.add("is-visible"), 110 * i));
+      }, 850);
+
+      petalBurst();
+      setTimeout(() => { env.style.display = "none"; }, 1700);
       window.scrollTo(0, 0);
     }
 
@@ -1045,12 +1225,55 @@
       document.body.classList.remove("is-locked");
       $("#envelope").style.display = "none";
     } else {
+      const env = $("#envelope");
       // Si ya la vio en esta sesión, no volver a mostrar el sobre
       if (store.get() === "1"){
         document.body.classList.remove("is-locked");
-        $("#envelope").style.display = "none";
+        env.style.display = "none";
       }
-      $("#openBtn").addEventListener("click", () => { store.set(); openInvitation(); });
+      env.addEventListener("click", openInvitation);
+      env.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar"){ e.preventDefault(); openInvitation(); }
+      });
+    }
+
+    /* =========================================================
+       PÉTALOS CAYENDO + ESTALLIDO AL ABRIR
+       ========================================================= */
+    const petalLayer = document.createElement("div");
+    petalLayer.className = "petals";
+    petalLayer.setAttribute("aria-hidden", "true");
+    document.body.appendChild(petalLayer);
+
+    function makePetal(falling){
+      const s = document.createElement("span");
+      s.className = "petal" + (falling ? "" : " petal--burst");
+      const size = 10 + Math.random() * 14;
+      s.style.width = size + "px";
+      s.style.height = (size * 1.5) + "px";
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.setProperty("--dx", (Math.random() * 160 - 80) + "px");
+      s.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+      if (falling){
+        s.style.animationDuration = (11 + Math.random() * 12) + "s";
+        s.style.animationDelay = (-Math.random() * 18) + "s";
+        s.style.opacity = (0.25 + Math.random() * 0.35).toFixed(2);
+      } else {
+        s.style.left = (38 + Math.random() * 24) + "vw";
+        s.style.top = (34 + Math.random() * 16) + "vh";
+        s.style.animationDuration = (2.2 + Math.random() * 1.6) + "s";
+        s.style.animationDelay = (Math.random() * 0.25) + "s";
+      }
+      s.innerHTML = '<svg viewBox="0 0 40 60"><use href="#petal"/></svg>';
+      petalLayer.appendChild(s);
+      if (!falling) setTimeout(() => s.remove(), 4200);
+    }
+
+    function petalBurst(){ for (let i = 0; i < 22; i++) makePetal(false); }
+
+    if (!prefersReduced){
+      const count = window.innerWidth < 700 ? 14 : 26;
+      for (let i = 0; i < count; i++) makePetal(true);
     }
 
     // Parallax del hero
