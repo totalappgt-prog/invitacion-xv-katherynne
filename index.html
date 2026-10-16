@@ -136,7 +136,21 @@
         linear-gradient(160deg,#FEFAF8 0%,#F9E2E8 55%,#F5E3D5 100%);
       transition:opacity .8s ease, visibility .8s ease;
     }
-    .envelope.is-open{ opacity:0; visibility:hidden; pointer-events:none; }
+    .envelope.is-open{
+      opacity:0; visibility:hidden; pointer-events:none;
+      transition:opacity .5s ease 1.35s, visibility .5s ease 1.35s;
+    }
+    /* El contenido del sobre se desvanece ANTES que el fondo: así los textos
+       del sobre y del hero nunca se enciman durante la transición. */
+    .envelope__head, .envelope__stage, .envelope__hint, .envelope__finger{
+      transition:opacity .35s ease;
+    }
+    .envelope.is-open .envelope__head,
+    .envelope.is-open .envelope__stage,
+    .envelope.is-open .envelope__hint,
+    .envelope.is-open .envelope__finger{
+      opacity:0; transition-delay:1.0s;
+    }
 
     .envelope__head{ position:relative; z-index:2; text-align:center; margin-bottom:22px; }
     .envelope__top{
@@ -180,7 +194,7 @@
       box-shadow:0 -8px 26px -14px rgba(146,79,101,.55);
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
       transform:translateY(8%);
-      transition:transform .95s cubic-bezier(.2,.75,.2,1) .4s, opacity .5s ease .4s;
+      transition:transform .8s cubic-bezier(.2,.75,.2,1) .3s, opacity .5s ease .3s;
     }
     .envelope.is-open .env__letter{ transform:translateY(-74%); }
     .env__letter-script{
@@ -201,7 +215,7 @@
       background:linear-gradient(180deg,#F5BCCB,#E79AAE);
       clip-path:polygon(0 0,100% 0,50% 100%);
       transform-origin:top center;
-      transition:transform .8s cubic-bezier(.45,.05,.25,1);
+      transition:transform .7s cubic-bezier(.45,.05,.25,1);
       backface-visibility:hidden;
     }
     .envelope.is-open .env__flap{ transform:rotateX(-180deg); z-index:0; }
@@ -361,8 +375,8 @@
     .hero__title .w:nth-child(2){ animation-delay:.30s; }
     .hero__title .w:nth-child(3){ animation-delay:.50s; }
     @keyframes wordUp{
-      0%{ opacity:0; transform:translateY(26px) scale(.94); filter:blur(6px); }
-      100%{ opacity:1; transform:none; filter:blur(0); }
+      0%{ opacity:0; transform:translateY(20px); }
+      100%{ opacity:1; transform:none; }
     }
     .hero__name{
       font-family:var(--font-serif); font-weight:500; letter-spacing:.12em;
@@ -1343,16 +1357,17 @@
       env.classList.add("is-open");           // abre la solapa + sale la carta
       document.body.classList.remove("is-locked");
 
-      // El hero entra con su propia animación en cascada
+      // El hero entra en cascada DESPUÉS de que el sobre terminó de desvanecerse,
+      // así no se encima ningún texto durante la transición.
       document.querySelectorAll(".hero .reveal").forEach((el) => el.classList.remove("is-visible"));
       setTimeout(() => {
         document.querySelectorAll(".hero .reveal").forEach((el, i) =>
           setTimeout(() => el.classList.add("is-visible"), 110 * i));
-      }, 850);
+      }, 1400);
 
       petalBurst();
       startMusic();
-      setTimeout(() => { env.style.display = "none"; }, 1700);
+      setTimeout(() => { env.style.display = "none"; }, 2050);
       window.scrollTo(0, 0);
     }
 
@@ -1362,11 +1377,12 @@
     };
 
     /* =========================================================
-       MÚSICA DE FONDO
+       MÚSICA DE FONDO (activada por defecto)
        ========================================================= */
     const MUSIC_SRC = "assets/music.mp3";
     const MUSIC_VOL = 0.55;
-    let music = null, musicOn = false, fadeTimer = null;
+    let music = null, fadeTimer = null;
+    let musicWanted = false;   // intención del usuario: música activada
     const musicBtn = $("#musicBtn");
 
     function ensureMusic(){
@@ -1375,6 +1391,10 @@
         music.loop = true;
         music.preload = "auto";
         music.volume = 0;
+        music.setAttribute("playsinline", "");
+        // El botón refleja el estado REAL de reproducción
+        music.addEventListener("play",  () => setMusicUI(true));
+        music.addEventListener("pause", () => setMusicUI(false));
       }
       return music;
     }
@@ -1395,21 +1415,27 @@
       }, 50);
     }
     function startMusic(){
-      if (musicOn) return;
+      musicWanted = true;
       const m = ensureMusic();
+      if (!m.paused){ setMusicUI(true); return; }
       const p = m.play();
-      const ok = () => { musicOn = true; setMusicUI(true); fadeTo(MUSIC_VOL, 2200); };
+      const ok = () => fadeTo(MUSIC_VOL, 1800);
       if (p && p.then) p.then(ok).catch(() => {});
       else ok();
     }
     function stopMusic(){
+      musicWanted = false;
       if (!music) return;
-      musicOn = false;
-      setMusicUI(false);
       fadeTo(0, 400);
-      setTimeout(() => { if (!musicOn && music) music.pause(); }, 420);
+      setTimeout(() => { if (!musicWanted && music) music.pause(); }, 420);
     }
-    musicBtn.addEventListener("click", (e) => { e.stopPropagation(); musicOn ? stopMusic() : startMusic(); });
+    musicBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      (musicWanted && music && !music.paused) ? stopMusic() : startMusic();
+    });
+
+    // Pre-carga la pista mientras se ve el sobre: así suena al instante
+    ensureMusic();
 
     function armAutoStart(){
       const once = (e) => {
@@ -1421,6 +1447,17 @@
       document.addEventListener("pointerdown", once, true);
       document.addEventListener("keydown", once, true);
     }
+
+    // Al volver a la pestaña, retoma la música si estaba activada
+    document.addEventListener("visibilitychange", () => {
+      if (!music) return;
+      if (document.hidden){ clearInterval(fadeTimer); music.pause(); }
+      else if (musicWanted){
+        music.volume = MUSIC_VOL;
+        const p = music.play();
+        if (p && p.catch) p.catch(() => {});
+      }
+    });
 
     if (prefersReduced){
       document.body.classList.remove("is-locked");
@@ -1434,6 +1471,8 @@
         env.style.display = "none";
         armAutoStart();
       }
+      // Arranca la música en el primer contacto (más confiable en iOS)
+      env.addEventListener("pointerdown", startMusic);
       env.addEventListener("click", openInvitation);
       env.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " " || e.key === "Spacebar"){ e.preventDefault(); openInvitation(); }
