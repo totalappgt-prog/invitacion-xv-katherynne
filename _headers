@@ -6,3 +6,11 @@
 
 /
   Content-Type: text/html; charset=UTF-8
+
+/mensajes.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/mensajes-data.json
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store

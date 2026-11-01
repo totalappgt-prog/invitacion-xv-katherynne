@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FDF8F5" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Mensajes para Katherynne · XV Años</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{
+      --ivory:#FDF8F5;
+      --rose:#C76D86;
+      --rose-deep:#A94E6A;
+      --rose-light:#F0A9BC;
+      --gold:#C6A052;
+      --gold-2:#E4C87F;
+      --ink:#4A3540;
+      --ink-soft:#856A76;
+      --grad-title:linear-gradient(100deg,#8E3D57 0%,#B0566E 40%,#9A7A2E 100%);
+      --font-script:'Great Vibes', cursive;
+      --font-serif:'Cormorant Garamond', Georgia, serif;
+      --font-sans:'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    *,*::before,*::after{ box-sizing:border-box; }
+    html{ -webkit-text-size-adjust:100%; }
+    body{
+      margin:0; min-height:100vh;
+      font-family:var(--font-sans); color:var(--ink); line-height:1.7;
+      background:
+        radial-gradient(circle at 15% 8%, rgba(243,194,209,.55), transparent 55%),
+        radial-gradient(circle at 88% 92%, rgba(228,200,127,.45), transparent 55%),
+        linear-gradient(180deg,#FEFAF8 0%,#FBE8EC 55%,#F6E4DA 100%);
+      background-attachment:fixed;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .deco{ position:fixed; z-index:0; pointer-events:none; opacity:.45; animation:sway 10s ease-in-out infinite; }
+    .deco svg{ width:100%; height:100%; display:block; }
+    .deco--tl{ top:-10px; left:-30px; width:130px; }
+    .deco--br{ bottom:-10px; right:-30px; width:150px; transform:rotate(180deg); }
+    @keyframes sway{ 0%,100%{ transform:rotate(-4deg); } 50%{ transform:rotate(4deg); } }
+
+    .page{ position:relative; z-index:1; width:min(760px,92vw); margin:0 auto; padding:46px 0 70px; }
+
+    .head{ text-align:center; margin-bottom:26px; }
+    .head__mono{
+      width:76px; height:76px; margin:0 auto 14px; border-radius:50%;
+      display:grid; place-items:center;
+      background:linear-gradient(150deg,#fff,#FDEFF3 55%,#FBF0DF);
+      border:1px solid rgba(198,160,82,.6);
+      box-shadow:0 18px 40px -22px rgba(146,79,101,.6), inset 0 0 0 5px rgba(255,255,255,.7);
+      font-family:var(--font-script); font-size:28px;
+      background-clip:padding-box;
+    }
+    .head__mono span{
+      background:var(--grad-title); -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .head__eyebrow{ margin:0 0 6px; font-size:10px; letter-spacing:.44em; text-transform:uppercase; color:var(--rose-deep); }
+    .head__title{
+      margin:0; font-family:var(--font-script); font-size:clamp(34px,9vw,52px);
+      line-height:1.2; padding:.06em .12em;
+      background:var(--grad-title); -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .head__sub{ margin:8px 0 0; font-family:var(--font-serif); font-style:italic; font-size:15px; color:var(--ink-soft); }
+
+    .bar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 18px; }
+    .count{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 18px; border-radius:999px; border:1px solid rgba(198,160,82,.55);
+      background:#fff; color:var(--rose-deep); font-family:var(--font-sans);
+      font-size:12px; font-weight:600; letter-spacing:.06em; cursor:pointer;
+      box-shadow:0 12px 26px -20px rgba(146,79,101,.6);
+      transition:transform .2s ease;
+    }
+    .btn:hover{ transform:translateY(-2px); }
+
+    .list{ display:grid; gap:14px; }
+
+    .msg{
+      background:linear-gradient(180deg,#fff,#FFF8FA);
+      border:1px solid rgba(198,160,82,.42);
+      border-radius:16px; padding:20px 20px 16px;
+      box-shadow:0 18px 45px -26px rgba(146,79,101,.45);
+      animation:in .5s ease both;
+    }
+    @keyframes in{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+    .msg__top{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+    .msg__name{ margin:0; font-family:var(--font-serif); font-weight:600; font-size:19px; color:var(--rose-deep); }
+    .msg__date{ font-size:11px; letter-spacing:.08em; color:#B6A6AC; }
+    .msg__text{ margin:8px 0 0; font-family:var(--font-serif); font-style:italic; font-size:17px; line-height:1.65; color:var(--ink); word-break:break-word; }
+    .msg__none{ margin:6px 0 0; font-size:13px; color:#B6A6AC; font-style:italic; }
+
+    .state{ text-align:center; padding:40px 18px; color:var(--ink-soft); }
+    .state i{ display:block; font-size:26px; color:var(--gold); margin-bottom:12px; }
+    .state p{ margin:0; font-size:14px; }
+    .state--error i{ color:#C0392B; }
+
+    .lock{ max-width:360px; margin:10px auto 0; text-align:center; }
+    .lock input{
+      width:100%; height:50px; padding:0 16px; border-radius:14px;
+      border:1px solid rgba(198,160,82,.55); background:#fff; color:var(--ink);
+      font-family:var(--font-sans); font-size:15px; text-align:center; letter-spacing:.08em;
+    }
+    .lock input:focus{ outline:none; border-color:var(--rose); box-shadow:0 0 0 3px rgba(201,109,134,.18); }
+    .lock .btn{ margin-top:12px; }
+
+    .foot{ margin-top:34px; text-align:center; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft); }
+
+    @media (min-width:700px){
+      .page{ padding:60px 0 90px; }
+      .list{ grid-template-columns:1fr 1fr; align-items:start; }
+    }
+    @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+
+  <span class="deco deco--tl" aria-hidden="true">
+    <svg viewBox="0 0 120 130"><g transform="translate(60,62)">
+      <ellipse cx="0" cy="-22" rx="15" ry="24" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(72)" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(144)" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(216)" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(288)" fill="#F4AEC3" opacity=".7"/>
+      <circle r="9" fill="#F4D98C" stroke="#C6A052" stroke-width="1.5"/>
+    </g></svg>
+  </span>
+  <span class="deco deco--br" aria-hidden="true">
+    <svg viewBox="0 0 120 130"><g transform="translate(60,62)">
+      <ellipse cx="0" cy="-22" rx="15" ry="24" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(72)" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(144)" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(216)" fill="#F4AEC3" opacity=".7"/>
+      <ellipse cx="0" cy="-22" rx="15" ry="24" transform="rotate(288)" fill="#F4AEC3" opacity=".7"/>
+      <circle r="9" fill="#F4D98C" stroke="#C6A052" stroke-width="1.5"/>
+    </g></svg>
+  </span>
+
+  <main class="page">
+    <header class="head">
+      <div class="head__mono"><span>KV</span></div>
+      <p class="head__eyebrow">XV Años</p>
+      <h1 class="head__title">Mensajes para Katherynne</h1>
+      <p class="head__sub">Las palabras que tus invitados te dejaron</p>
+    </header>
+
+    <div class="bar">
+      <span class="count" id="count">—</span>
+      <button class="btn" id="reload" type="button"><i class="fa-solid fa-rotate"></i> Actualizar</button>
+    </div>
+
+    <div id="content">
+      <div class="state" id="loading">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Cargando mensajes…</p>
+      </div>
+    </div>
+
+    <p class="foot">05 · Diciembre · 2026</p>
+  </main>
+
+  <script>
+    const DATA_URL = "/mensajes-data.json";
+    const content = document.getElementById("content");
+    const countEl = document.getElementById("count");
+
+    function el(tag, cls, text){
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    }
+
+    function fmtDate(iso){
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d)) return "";
+      return d.toLocaleDateString("es-GT", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    function showState(icon, text, isError){
+      content.innerHTML = "";
+      const box = el("div", "state" + (isError ? " state--error" : ""));
+      const i = el("i", icon);
+      box.appendChild(i);
+      box.appendChild(el("p", null, text));
+      content.appendChild(box);
+    }
+
+    function render(items){
+      content.innerHTML = "";
+      if (!items.length){
+        showState("fa-regular fa-envelope-open", "Todavía no hay mensajes. ¡Sé el primero en dejar el tuyo!");
+        countEl.textContent = "0 mensajes";
+        return;
+      }
+      const list = el("div", "list");
+      items.forEach((it, idx) => {
+        const card = el("article", "msg");
+        card.style.animationDelay = Math.min(idx * 40, 400) + "ms";
+
+        const top = el("div", "msg__top");
+        top.appendChild(el("h2", "msg__name", it.nombre || "Invitado"));
+        if (it.fecha) top.appendChild(el("span", "msg__date", fmtDate(it.fecha)));
+        card.appendChild(top);
+
+        if (it.mensaje){
+          const p = el("p", "msg__text", "“" + it.mensaje + "”");
+          card.appendChild(p);
+        } else {
+          card.appendChild(el("p", "msg__none", "Sin mensaje, solo su confirmación."));
+        }
+        list.appendChild(card);
+      });
+      content.appendChild(list);
+      countEl.textContent = items.length + (items.length === 1 ? " mensaje" : " mensajes");
+    }
+
+    async function load(){
+      showState("fa-solid fa-spinner fa-spin", "Cargando mensajes…");
+      countEl.textContent = "—";
+      try {
+        const res = await fetch(DATA_URL + "?t=" + Date.now(), { headers: { "Accept": "application/json" } });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        render(data.items || []);
+      } catch (e) {
+        showState("fa-solid fa-triangle-exclamation", "No se pudieron cargar los mensajes. Intenta de nuevo.", true);
+        console.error(e);
+      }
+    }
+
+    document.getElementById("reload").addEventListener("click", load);
+    load();
+  </script>
+</body>
+</html>
