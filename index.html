@@ -496,6 +496,28 @@
     .date-badge__month{ font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft); }
 
     .place-grid{ display:grid; gap:20px; }
+    .place-single{ max-width:560px; margin:0 auto; }
+
+    /* Horarios dentro de la tarjeta del lugar */
+    .schedule{ list-style:none; margin:18px 0 0; padding:0; display:grid; gap:10px; }
+    .schedule li{
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px; border-radius:12px;
+      background:var(--nude-soft);
+      border:1px solid rgba(198,160,82,.38);
+    }
+    .schedule__ic{
+      width:34px; height:34px; border-radius:10px; flex:0 0 34px;
+      display:grid; place-items:center; font-size:14px;
+      background:linear-gradient(140deg,#fff,#FBE7EC);
+      color:var(--rose-deep);
+      border:1px solid rgba(198,160,82,.45);
+    }
+    .schedule__name{ flex:1 1 auto; font-size:14px; color:var(--ink); }
+    .schedule__time{
+      font-family:var(--font-serif); font-weight:600; font-size:18px;
+      color:var(--rose-deep); white-space:nowrap;
+    }
     .place{ position:relative; overflow:hidden; }
     .place__icon{
       width:54px; height:54px; border-radius:16px; display:grid; place-items:center;
@@ -955,7 +977,7 @@
 
         <div class="hero__date reveal d3">
           <i class="fa-solid fa-calendar-days"></i>
-          <span>Sábado · 05 de Diciembre 2026</span>
+          <span>Sábado · 05 de Diciembre 2026 · 5:45 PM</span>
         </div>
       </div>
 
@@ -1067,40 +1089,36 @@
           <span class="date-badge__month">Diciembre · 2026</span>
         </div>
 
-        <div class="place-grid">
-          <!-- Acto Religioso -->
-          <article class="card place reveal reveal--left d1" style="text-align:left">
+        <div class="place-single">
+          <article class="card place reveal reveal--zoom d1" style="text-align:left">
             <div class="place__icon"><i class="fa-solid fa-church"></i></div>
-            <h3>Acto Religioso</h3>
-            <p class="place__time" data-bind="ceremonia-hora"></p>
-            <p class="place__venue" data-bind="ceremonia-lugar"></p>
-            <p class="place__addr" data-bind="ceremonia-dir"></p>
-            <div class="map-actions">
-              <a class="btn btn--primary" data-map="ceremonia-maps" href="#" target="_blank" rel="noopener">
-                <i class="fa-solid fa-map-location-dot"></i> Ver ubicación
-              </a>
-              <a class="btn btn--waze" data-map="ceremonia-waze" href="#" target="_blank" rel="noopener">
-                <i class="fa-solid fa-route"></i> Abrir en Waze
-              </a>
-            </div>
-          </article>
+            <h3>Lugar del evento</h3>
+            <p class="place__venue" data-bind="evento-lugar"></p>
+            <p class="place__addr" data-bind="evento-dir"></p>
 
-          <!-- Recepción -->
-          <article class="card place reveal reveal--right d2" style="text-align:left">
-            <div class="place__icon"><i class="fa-solid fa-champagne-glasses"></i></div>
-            <h3>Recepción</h3>
-            <p class="place__time" data-bind="recepcion-hora"></p>
-            <p class="place__venue" data-bind="recepcion-lugar"></p>
-            <p class="place__addr" data-bind="recepcion-dir"></p>
+            <ul class="schedule">
+              <li>
+                <span class="schedule__ic"><i class="fa-solid fa-church"></i></span>
+                <span class="schedule__name">Ceremonia religiosa</span>
+                <span class="schedule__time" data-bind="ceremonia-hora"></span>
+              </li>
+              <li>
+                <span class="schedule__ic"><i class="fa-solid fa-champagne-glasses"></i></span>
+                <span class="schedule__name">Recepción</span>
+                <span class="schedule__time" data-bind="recepcion-hora"></span>
+              </li>
+            </ul>
+
             <p class="place__note">
               <i class="fa-solid fa-star" style="color:var(--gold)"></i>
               Espectaculares instalaciones en el KM. 17.8 Carretera a El Salvador para todo tipo de eventos.
             </p>
+
             <div class="map-actions">
-              <a class="btn btn--primary" data-map="recepcion-maps" href="#" target="_blank" rel="noopener">
+              <a class="btn btn--primary" data-map="evento-maps" href="#" target="_blank" rel="noopener">
                 <i class="fa-solid fa-map-location-dot"></i> Ver ubicación
               </a>
-              <a class="btn btn--waze" data-map="recepcion-waze" href="#" target="_blank" rel="noopener">
+              <a class="btn btn--waze" data-map="evento-waze" href="#" target="_blank" rel="noopener">
                 <i class="fa-solid fa-route"></i> Abrir en Waze
               </a>
             </div>
@@ -1217,26 +1235,24 @@
        ========================================================= */
     const CONFIG = {
       // Fecha y hora del evento (ISO con zona horaria). Guatemala = -06:00
-      eventStart: "2026-12-05T18:00:00-06:00",
+      // Arranca con la ceremonia religiosa a las 5:45 PM
+      eventStart: "2026-12-05T17:45:00-06:00",
       // Cuánto dura el evento (para el botón de calendario), en horas
-      eventHours: 6,
+      eventHours: 7,
 
       // WhatsApp donde se reciben las confirmaciones (solo dígitos, con código de país)
       whatsapp: "50249880473",
       // Mensaje prellenado de WhatsApp
       whatsappMsg: "¡Hola! Confirmo mi asistencia a los XV Años de Katherynne 🎀",
 
-      // Datos de los eventos
-      ceremonia: {
-        hora:  "17:00 hrs",
+      // Un solo lugar para todo el evento
+      evento: {
         lugar: "Eventos La Arboleda",
         dir:   "Km. 17.8 Carretera a El Salvador, Guatemala"
       },
-      recepcion: {
-        hora:  "19:00 hrs",
-        lugar: "Eventos La Arboleda",
-        dir:   "Km. 17.8 Carretera a El Salvador, Guatemala"
-      },
+      // Horarios
+      ceremonia: { hora: "5:45 PM" },
+      recepcion: { hora: "7:00 PM" },
 
       // Consulta usada para el mapa embebido y los botones
       venueQuery: "Eventos La Arboleda, Km. 17.8 Carretera a El Salvador, Guatemala",
@@ -1259,21 +1275,17 @@
        ========================================================= */
     function bind(id, value){ const el = document.querySelector(`[data-bind="${id}"]`); if (el) el.textContent = value; }
 
+    bind("evento-lugar",    CONFIG.evento.lugar);
+    bind("evento-dir",      CONFIG.evento.dir);
     bind("ceremonia-hora",  CONFIG.ceremonia.hora);
-    bind("ceremonia-lugar", CONFIG.ceremonia.lugar);
-    bind("ceremonia-dir",   CONFIG.ceremonia.dir);
     bind("recepcion-hora",  CONFIG.recepcion.hora);
-    bind("recepcion-lugar", CONFIG.recepcion.lugar);
-    bind("recepcion-dir",   CONFIG.recepcion.dir);
 
     const q = CONFIG.venueQuery;
     const gmaps = `https://www.google.com/maps/search/?api=1&query=${enc(q)}`;
     const waze  = `https://waze.com/ul?q=${enc(q)}&navigate=yes`;
 
-    document.querySelector('[data-map="ceremonia-maps"]').href = gmaps;
-    document.querySelector('[data-map="ceremonia-waze"]').href = waze;
-    document.querySelector('[data-map="recepcion-maps"]').href = gmaps;
-    document.querySelector('[data-map="recepcion-waze"]').href = waze;
+    document.querySelectorAll('[data-map$="-maps"]').forEach((a) => { a.href = gmaps; });
+    document.querySelectorAll('[data-map$="-waze"]').forEach((a) => { a.href = waze; });
     $("#venueMap").src = `https://www.google.com/maps?q=${enc(q)}&z=15&hl=es&output=embed`;
 
     /* =========================================================
