@@ -1387,8 +1387,10 @@
       data.append("nombre", name);
       data.append("mensaje", extra);
 
-      fetch("/", {
+      // El sitio vive en GitHub Pages; las confirmaciones se guardan en Netlify Forms
+      fetch("https://xv-katherynne.netlify.app/", {
         method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: data.toString()
       }).catch(() => {});
