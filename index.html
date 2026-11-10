@@ -715,6 +715,18 @@
       text-align:center; padding:26px 20px 34px;
       background:#F3DCD1; color:var(--ink-soft); font-size:12px; letter-spacing:.12em;
     }
+    .brand{ margin-top:18px; padding-top:18px; border-top:1px solid rgba(198,160,82,.4); }
+    .brand__by{ margin:0 0 8px; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); }
+    .brand__by strong{ color:var(--rose-deep); letter-spacing:.18em; }
+    .brand__wa{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 16px; border-radius:999px;
+      background:#fff; border:1px solid rgba(198,160,82,.55);
+      color:var(--rose-deep); font-weight:600; font-size:13px; letter-spacing:.06em;
+      box-shadow:0 12px 26px -20px rgba(146,79,101,.6);
+    }
+    .brand__wa i{ color:#1FA855; font-size:15px; }
+    .brand__tag{ margin:10px 0 0; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); }
 
     /* Botón flotante WhatsApp */
     .float-wa{
@@ -1254,14 +1266,17 @@
           <input id="guestName" name="nombre" type="text" maxlength="80"
                  placeholder="Escribe tu nombre…" autocomplete="name" />
 
-          <label for="specialMsg" style="margin-top:18px">¿Quieres dejarle un mensaje especial a la quinceañera?</label>
+          <label for="specialMsg" style="margin-top:18px">Tu mensaje especial para Katherynne</label>
           <textarea id="specialMsg" name="mensaje" rows="3" maxlength="400"
                     placeholder="Escribe aquí tu mensaje para Katherynne…"></textarea>
         </div>
 
         <div class="rsvp__actions reveal d3">
+          <button class="btn btn--primary btn--lg" id="saveMsgBtn" type="button">
+            <i class="fa-solid fa-envelope"></i> Enviar mensaje a la cumpleañera
+          </button>
           <button class="btn btn--whatsapp btn--lg" id="rsvpBtn" type="button">
-            <i class="fa-brands fa-whatsapp"></i> Confirmar por WhatsApp
+            <i class="fa-brands fa-whatsapp"></i> Confirmar asistencia
           </button>
           <p class="rsvp__status" id="rsvpStatus" role="status"></p>
         </div>
@@ -1284,7 +1299,16 @@
   </main>
 
   <footer class="footer">
-    Hecho con <i class="fa-solid fa-heart" style="color:var(--rose)"></i> para los XV Años de Katherynne Villanueva
+    <p style="margin:0">
+      Hecho con <i class="fa-solid fa-heart" style="color:var(--rose)"></i> para los XV Años de Katherynne Villanueva
+    </p>
+    <div class="brand">
+      <p class="brand__by">Invitación digital por <strong>Total App GT</strong></p>
+      <a class="brand__wa" href="https://wa.me/50258303182" target="_blank" rel="noopener">
+        <i class="fa-brands fa-whatsapp"></i> 5830 3182
+      </a>
+      <p class="brand__tag">¿Quieres una invitación así? Escríbenos · Todo tipo de ocasión</p>
+    </div>
   </footer>
 
   <!-- Botón flotante -->
@@ -1366,43 +1390,61 @@
     const wa = waLink(CONFIG.whatsappMsg);
     $("#floatWa").href = wa;
 
-    // Confirmar: guarda en Netlify Forms (queda registrado) y abre WhatsApp
-    $("#rsvpBtn").addEventListener("click", () => {
-      const nameBox = $("#guestName");
-      const msgBox  = $("#specialMsg");
-      const status  = $("#rsvpStatus");
-      const name  = nameBox ? nameBox.value.trim() : "";
-      const extra = msgBox  ? msgBox.value.trim()  : "";
-
-      if (!name){
-        if (nameBox){ nameBox.classList.add("is-invalid"); nameBox.focus(); }
-        if (status){ status.textContent = "Escribe tu nombre para confirmar."; status.className = "rsvp__status is-error"; }
-        return;
-      }
-      nameBox.classList.remove("is-invalid");
-
-      // 1) Guardar la confirmación (nombre + mensaje) en Netlify Forms
+    // Guarda la respuesta (nombre + mensaje) en el formulario
+    function saveRsvp(name, message){
       const data = new URLSearchParams();
       data.append("form-name", "rsvp-xv-katherynne");
       data.append("nombre", name);
-      data.append("mensaje", extra);
-
-      // El sitio vive en GitHub Pages; las confirmaciones se guardan en Netlify Forms
-      fetch("https://xv-katherynne.netlify.app/", {
+      data.append("mensaje", message);
+      return fetch("https://xv-katherynne.netlify.app/", {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: data.toString()
       }).catch(() => {});
+    }
 
-      if (status){
-        status.textContent = "¡Gracias, " + name + "! Confirmación guardada. Abriendo WhatsApp…";
-        status.className = "rsvp__status is-ok";
+    function readRsvp(){
+      const nameBox = $("#guestName");
+      const msgBox  = $("#specialMsg");
+      const status  = $("#rsvpStatus");
+      return {
+        nameBox, status,
+        name: nameBox ? nameBox.value.trim() : "",
+        msg:  msgBox  ? msgBox.value.trim()  : ""
+      };
+    }
+
+    function invalidName(f, text){
+      if (f.nameBox){ f.nameBox.classList.add("is-invalid"); f.nameBox.focus(); }
+      if (f.status){ f.status.textContent = text; f.status.className = "rsvp__status is-error"; }
+    }
+
+    // 1) Enviar SOLO el mensaje a la quinceañera (se guarda para ella)
+    $("#saveMsgBtn").addEventListener("click", () => {
+      const f = readRsvp();
+      if (!f.name){ invalidName(f, "Escribe tu nombre para enviar el mensaje."); return; }
+      if (!f.msg){ if (f.status){ f.status.textContent = "Escribe tu mensaje para Katherynne."; f.status.className = "rsvp__status is-error"; } $("#specialMsg").focus(); return; }
+      f.nameBox.classList.remove("is-invalid");
+      saveRsvp(f.name, f.msg);
+      if (f.status){
+        f.status.textContent = "¡Gracias, " + f.name + "! Tu mensaje quedó guardado para Katherynne 💌";
+        f.status.className = "rsvp__status is-ok";
       }
+    });
 
-      // 2) Abrir WhatsApp con la confirmación
-      let msg = CONFIG.whatsappMsg + "\n\nNombre: " + name;
-      if (extra) msg += "\n💌 Mensaje para Katherynne: " + extra;
+    // 2) Confirmar ASISTENCIA (se registra y abre WhatsApp)
+    $("#rsvpBtn").addEventListener("click", () => {
+      const f = readRsvp();
+      if (!f.name){ invalidName(f, "Escribe tu nombre para confirmar tu asistencia."); return; }
+      f.nameBox.classList.remove("is-invalid");
+      saveRsvp(f.name, f.msg);
+      if (f.status){
+        f.status.textContent = "¡Gracias, " + f.name + "! Confirmación guardada. Abriendo WhatsApp…";
+        f.status.className = "rsvp__status is-ok";
+      }
+      let msg = CONFIG.whatsappMsg + "\n\nNombre: " + f.name;
+      if (f.msg) msg += "\n💌 Mensaje para Katherynne: " + f.msg;
       window.open(waLink(msg), "_blank", "noopener");
     });
 

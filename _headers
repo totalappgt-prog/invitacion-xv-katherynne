@@ -1,11 +1,13 @@
-/*
+﻿/*
   X-Content-Type-Options: nosniff
 
 /index.html
   Content-Type: text/html; charset=UTF-8
+  Cache-Control: no-store
 
 /
   Content-Type: text/html; charset=UTF-8
+  Cache-Control: no-store
 
 /mensajes.html
   X-Robots-Tag: noindex, nofollow
